@@ -30,3 +30,10 @@ dist-ssr
 .env.development
 .env.test
 .env.production
+
+# Environment variables
+backend/.env
+backend/.env.local
+backend/.env.development
+backend/.env.test
+backend/.env.production
