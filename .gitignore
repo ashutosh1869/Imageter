@@ -9,12 +9,12 @@ lerna-debug.log*
 
 # Node modules
 client/Imageter/node_modules/
-backend/node_modules/
+server/node_modules/
 
 # Build output
 client/Imageter/dist/
 client/Imageter/dist-ssr/
-backend/dist/
+server/dist/
 
 # Local editor files
 *.local
@@ -34,8 +34,8 @@ client/Imageter/.env.local
 client/Imageter/.env.development
 client/Imageter/.env.test
 client/Imageter/.env.production
-backend/.env
-backend/.env.local
-backend/.env.development
-backend/.env.test
-backend/.env.production
+server/.env
+server/.env.local
+server/.env.development
+server/.env.test
+server/.env.production
