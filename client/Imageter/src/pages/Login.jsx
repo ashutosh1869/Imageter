@@ -26,7 +26,7 @@ function Login() {
           setUser(res.data.user.name);
           setToken(res.data.token);
           localStorage.setItem('token', res.data.token);
-          localStorage.setItem('user', JSON.stringify(res.data.user.name));
+          localStorage.setItem('user', res.data.user.name);
           setShowLogin(false);
           console.log(showLogin);
         } else {
@@ -47,7 +47,7 @@ function Login() {
           setUser(data.user.name);
           setToken(data.token);
           localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data.user.name));
+          localStorage.setItem('user', data.user.name);
 
           setShowLogin(false);
         } else {
