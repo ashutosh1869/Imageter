@@ -34,7 +34,7 @@ export const registerUser = async (req, res) => {
       { id: user._id },
       process.env.JWT_SECRET
     )
-    return res.json({success:true,message:"User registered successfully",token,user:{ name:user.name, email:user.email, creditBalance:user.creditBalance }});
+    return res.json({success:true,message:"User registered successfully",token,user:{ name:user.name}});
 }
 catch (error) {
     console.error("Error registering user:", error);
