@@ -39,3 +39,4 @@ server/.env.local
 server/.env.development
 server/.env.test
 server/.env.production
+.vercel
