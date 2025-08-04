@@ -9,15 +9,17 @@ import { toast } from "react-toastify";
 
 
 
-export const AppContext = createContext ();
+export const AppContext = createContext();
 
 const AppContextProvider = (props)=> {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(localStorage.getItem('user')||null);
     const[token, setToken] = useState(localStorage.getItem('token') || null);
   const [showLogin, setShowLogin] = React.useState(false);
     const navigate = useNavigate();
 
-    const [credit, setCredit] = useState(50);
+    console.log(user, "contextUser")
+
+    const [credit, setCredit] = useState(5);
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     const getCredits=async()=>{
         try{
@@ -27,7 +29,7 @@ const AppContextProvider = (props)=> {
             });
             if(data.success){
                 setCredit(data.credits);
-                setUser(data.user);
+                // setUser(data.user);
                 return data.credits;
             }
         }
@@ -41,6 +43,7 @@ const AppContextProvider = (props)=> {
         setUser(null);
         setToken(null);
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         setCredit(0);
         setShowLogin(false);
         navigate('/');
@@ -81,11 +84,10 @@ const AppContextProvider = (props)=> {
         token,
         setToken,
         credit,
-        setCredit
-        , getCredits,
+        setCredit,
+        getCredits,
         logout,
         showLogin,
-        setShowLogin,
         setShowLogin,
         generateImage
     };

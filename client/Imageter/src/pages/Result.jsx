@@ -2,7 +2,6 @@ import React from 'react'
 import {assets} from '../assets/assets'
 import { AppContext } from '../context/AppContext';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
 
 function Result() {
   const [image,setImage] = React.useState(assets.sample_img_1);

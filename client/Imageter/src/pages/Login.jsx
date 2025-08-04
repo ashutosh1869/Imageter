@@ -7,44 +7,61 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 
 function Login() {
-  const { user } = useContext(AppContext);
   const [state, setState] = React.useState('Login');
   const {showLogin,setShowLogin} = useContext(AppContext);
   const navigate = useNavigate();
   const {setUser,setToken, backendUrl}=useContext(AppContext);
+
+  console.log(setUser,setToken, backendUrl,"context")
   const [name,setName] = React.useState('');
   const [email,setEmail] = React.useState('');
   const [password,setPassword] = React.useState('');
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        if(state === 'Login') {
-          const {data} = await axios.post(backendUrl + '/api/user/login',{email,password});
-          console.log(data);
-          if(data.success){
-            setUser(data.user);
+      if (state === 'Login') {
+        const res = await axios.post(backendUrl + '/api/user/login', { email, password });
+        console.log(res);
+        if (res.data.success) {
+          setUser(res.data.name);
+          setToken(res.data.token);
+          localStorage.setItem('token', res.data.token);
+          localStorage.setItem('user', JSON.stringify(res.data.name));
+          setShowLogin(false);
+          console.log(showLogin);
+        } else {
+          toast.error(res.data.message);
+        }
+      } else {
+        // Registration validation
+        if (!name.trim() || !email.trim() || !password.trim()) {
+          toast.error('Please fill all fields');
+          return;
+        }
+        // Registration logic
+
+       
+        const { data } = await axios.post(`${backendUrl}/api/user/register`, { name, email, password });
+        console.log(data);
+        if (data.success) {
+          setUser(data.user);
           setToken(data.token);
           localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+
           setShowLogin(false);
-          console.log(showLogin)
-          }else
-            toast.error(data.message);
         } else {
-          //registration logic
-          const {data}=await axios.post(backendUrl + '/api/user/register',{name,email,password});
-          if(data.success){
-            setUser(data.user);
-            setToken(data.token);
-            localStorage.setItem('token', data.token);
-            setShowLogin(false);
-          }else
-            toast.error(data.message);
+          toast.error(data.message);
         }
+      }
     } catch (error) {
-      console.error("Error during form submission:", error);
-      // Optionally, you can show an error message to the user
-      toast.error("An error occurred. Please try again later.");
-      
+      console.error('Error during form submission:', error);
+      if (error.response && error.response.data) {
+        toast.error(error.response.data.message || 'An error occurred. Please try again later.');
+        console.error('Backend error:', error.response.data);
+      } else {
+        toast.error('An error occurred. Please try again later.');
+      }
     }
   }
 

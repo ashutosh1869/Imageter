@@ -1,4 +1,4 @@
-import UserModel from "../models/userModel.js";
+import userModel from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
@@ -13,6 +13,10 @@ export const registerUser = async (req, res) => {
     if(!name || !email || !password){
         return res.json({success:false,message:"please fill all the fields"})
     }
+     const existingUser = await userModel.findOne({ email });
+      if (existingUser) {
+      return res.status(400).json({ success: false, message: 'Email already exists' });
+      }
     const salt= await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password,salt);
     const userData={
@@ -20,13 +24,17 @@ export const registerUser = async (req, res) => {
         email,
         password:hashedPassword
     };
-    const newUser = new UserModel(userData);
+    const newUser = new userModel(userData);
+    if (!newUser) {
+      return res.status(400).json({ success: false, message: "User registration failed " });
+    }
     const user =await newUser.save();
+    console.log(user);
     const token =jwt.sign(
-      { userId: user._id },
+      { id: user._id },
       process.env.JWT_SECRET
     )
-    return res.json({success:true,message:"User registered successfully",token,user:user.name});
+    return res.json({success:true,message:"User registered successfully",token,user:{ name:user.name, email:user.email, creditBalance:user.creditBalance }});
 }
 catch (error) {
     console.error("Error registering user:", error);
@@ -40,13 +48,15 @@ export const loginUser = async(req,res)=>{
     if(!email || !password){
       return res.json({success:false,message:"please fill all the details."})
     }
-    const user = await UserModel.findOne({email})
+    const user = await userModel.findOne({email})
     if(!user)
       return res.json({success:false,message:"No user found."})
     const isMatch = await bcrypt.compare(password,user.password);
     if(isMatch){
       const token = jwt.sign({id:user._id},process.env.JWT_SECRET)
-      return res.json({success:true,token,message:"logged in successfully",name:user.name})
+      return res.json({success:true,token,message:"logged in successfully",
+        user:{ name:user.name, email:user.email, creditBalance:user.creditBalance }
+      })
     }else{
       return res.json({success:false,message:"Invalid Password"})
     }
@@ -64,7 +74,7 @@ export const razorpayInstance = new razorpay({
 export const createOrder = async (req, res) => {
   try {
    const {userId,planId} = req.body;
-   const userData = await UserModel.findById(userId);
+   const userData = await userModel.findById(userId);
     if(!userId || !planId){
       return res.json({success:false,message:"Missing details"})
     }
@@ -159,7 +169,7 @@ export const verifyRazorpayPayment = async (req, res) => {
     }
 
     // 4. Update user credits
-    const user = await UserModel.findById(transaction.userId);
+    const user = await userModel.findById(transaction.userId);
     if (!user) {
       return res.status(404).json({ success: false, message: "User not found" });
     }
@@ -187,7 +197,7 @@ export const verifyRazorpayPayment = async (req, res) => {
 export const userCredits = async (req,res)=>{
   try {
     const {userId}=req.body
-    const user = await UserModel.findById(userId)
+    const user = await userModel.findById(userId)
     return res.json({success:true,credits:user.creditBalance,user:{name:user.name}})
   } catch (error) {
      console.error("Error credits in user:", error);

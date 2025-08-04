@@ -3,7 +3,6 @@ import BuyCredit from '../components/BuyCredit'
 
 function ByCredit() {
   return (
-    
       <BuyCredit />
     
   )

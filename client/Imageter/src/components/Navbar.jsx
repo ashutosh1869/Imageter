@@ -1,14 +1,15 @@
 //write all the classname using copilot and make sure you add sm md lg classes
 import React, { useState } from 'react'
 import { assets } from '../assets/assets'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useContext } from 'react';
 import { AppContext } from '../context/AppContext';
 
 
 
 function Navbar() {
-    const { user, setUser,logout,credit, setShowLogin } = useContext(AppContext);
+    const { user,logout,credit, setShowLogin } = useContext(AppContext);
+    console.log(user,"nav")
     const navigate = useNavigate();
     return (
         <div className='w-screen flex px-4 justify-between items-center bg-white shadow-md p-2'>
@@ -23,7 +24,7 @@ function Navbar() {
                             <img src={assets.credit_star} alt="" className='h-6 w-6' />
                             <p className='items-center'>Credits: {credit}</p>
                         </button>
-                        <p className='px-2 py-2'>Hi, {user.name}</p>
+                        <p className='px-2 py-2'>Hi, {user}</p>
                     
                         <div className='flex items-center group relative cursor-pointer'>
                             <img src={assets.profile_icon} alt="User" className='h-10 w-10 rounded-full' />
