@@ -23,10 +23,10 @@ function Login() {
         const res = await axios.post(backendUrl + '/api/user/login', { email, password });
         console.log(res);
         if (res.data.success) {
-          setUser(res.data.name);
+          setUser(res.data.user.name);
           setToken(res.data.token);
           localStorage.setItem('token', res.data.token);
-          localStorage.setItem('user', JSON.stringify(res.data.name));
+          localStorage.setItem('user', JSON.stringify(res.data.user.name));
           setShowLogin(false);
           console.log(showLogin);
         } else {
