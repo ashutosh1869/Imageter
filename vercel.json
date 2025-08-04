@@ -2,23 +2,23 @@
   "version": 2,
   "builds": [
     {
-      "src": "frontend/package.json",
+      "src": "client/Imageter/package.json",
       "use": "@vercel/static-build",
       "config": { "distDir": "dist" }
     },
     {
-      "src": "backend/index.js",
+      "src": "server/index.js",
       "use": "@vercel/node"
     }
   ],
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/backend/index.js"
+      "destination": "/server/index.js"
     },
     {
       "source": "/(.*)",
-      "destination": "/frontend/dist/index.html"
+      "destination": "/client/Imageter/dist/index.html"
     }
   ]
 }
